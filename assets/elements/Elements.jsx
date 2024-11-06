@@ -11,7 +11,7 @@ export const Screen = styled(SafeAreaView)`
 export const Cover = styled(View)`
   flex: 1;
   background-color: ${({ theme }) => theme.background};
-  padding: 10px;
+  padding-horizontal: 10px;
 `;
 
 export const Container = styled(SafeAreaView)`

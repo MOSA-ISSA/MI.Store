@@ -4,9 +4,9 @@ import { useTheme } from '../../hooks/ThemeContext';
 import styled from 'styled-components/native';
 import { Txt } from './Elements';
 
-const PressableStyled = styled(Pressable) <{ isHovered: boolean; isPressed: boolean; }>`
-    background-color: ${({ isPressed, isHovered, theme }) =>
-        isPressed ?  `${theme.buttonBgc}50` : isHovered ? `${theme.buttonBgc}90`  : theme.buttonBgc};
+const PressableStyled = styled(Pressable) <{ isHovered: boolean; isPressed: boolean; bgcColor: string; isCard?: boolean }>`
+    background-color: ${({ isPressed, isHovered, bgcColor, isCard, theme }) =>
+        isPressed ? `${bgcColor || theme[isCard ? "card" : "buttonBgc"]}50` : isHovered ? `${bgcColor || theme[isCard ? "card" : "buttonBgc"]}90` : bgcColor || theme[isCard ? "card" : "buttonBgc"]};
 `;
 
 interface TheButtonProps {
@@ -15,16 +15,19 @@ interface TheButtonProps {
     title?: string;
     textStyle?: StyleProp<TextStyle>;
     children?: ReactNode;
+    isCard?: boolean;
+    bgcColor?: string;
 }
 
 const TheButton: React.FC<TheButtonProps> = React.memo(({
+    bgcColor,
     buttonStyle,
     onPress,
     title,
     textStyle,
+    isCard,
     children
 }) => {
-    const { colorTextElement } = useTheme();
     const [isHovered, setHovered] = useState(false);
     const [isPressed, setPressed] = useState(false);
 
@@ -37,6 +40,8 @@ const TheButton: React.FC<TheButtonProps> = React.memo(({
             onPressOut={() => setPressed(false)}
             isHovered={isHovered}
             isPressed={isPressed}
+            isCard={isCard}
+            bgcColor={bgcColor}
             style={{ ...styles.button, ...buttonStyle }}
         >
             {children ?? (

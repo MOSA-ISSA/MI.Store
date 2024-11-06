@@ -8,8 +8,6 @@ import LanguageModal from './LanguageModal';
 import STRINGS from './../Strings';
 import TheContext from '@/hooks/TheContext';
 
-const size = Dimensions.get('window');
-
 const HeaderStyled = styled(View)`
     background-color: ${({ theme }) => theme.card};
 `;

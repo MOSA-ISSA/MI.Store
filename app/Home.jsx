@@ -1,14 +1,41 @@
-import { ScrollView, StyleSheet, } from 'react-native'
-import React from 'react'
+import { ActivityIndicator, ScrollView, StyleSheet, } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Txt, Cover } from '@elements/Elements';
+import ProductCard from '@/components/ProductCard';
+import { getAllProducts } from '../api/product.api';
 
 const Home = () => {
+    const [Loading, setLoading] = useState(true);
+    const [Products, setProduct] = useState([]);
+
+    const getAllProductsApi = async () => {
+        const products = await getAllProducts()
+        .catch((error) => console.log(error))
+        .finally(() => setLoading(false));
+        setProduct(products?.data||[]);
+        console.log("products", products?.data?.length);
+    }
+
+    const renderProducts = () => {
+        return Products.map((product, index) => {
+            return (
+                <ProductCard {...product} key={index} />
+            )
+        })
+    }
+
+    useEffect(() => {
+        getAllProductsApi();
+    }, [])
 
     return (
         <Cover>
-            <Txt>Home</Txt>
-            <ScrollView contentContainerStyle={styles.scrollView}>
-
+            {Loading && <ActivityIndicator size={"large"} />}
+            <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollViewContainer}
+            >
+                {renderProducts()}
             </ScrollView>
         </Cover>
     )
@@ -21,6 +48,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
+    },
+    scrollViewContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 10,
     }
 })
