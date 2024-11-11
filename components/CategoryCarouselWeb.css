@@ -1,0 +1,18 @@
+.scrollable-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    scroll-behavior: smooth;
+    cursor: pointer;
+    align-self: flex-start;
+}
+.scrollable-row.no-select {
+    cursor: grabbing;
+}
+.scrollable-row::-webkit-scrollbar {
+    display: none;
+}
+.no-select {
+    user-select: none;
+    cursor: grabbing;
+}

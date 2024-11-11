@@ -12,9 +12,10 @@ const TheProvider = (props) => {
         loading: false,
     });
     const [user, setUser] = useState();
-    const [group, setGroup] = useState();
+    const [selectedCategory, setCategory] = useState('');
     const [pathValue, setPathValue] = useState("");
     const [Language, setLanguage] = useState("en");
+    const [Search, setSearch] = useState(false);
     const Admin = user?._isAdmin;
 
     useEffect(() => {
@@ -24,12 +25,13 @@ const TheProvider = (props) => {
     return (
         <TheContext.Provider
             value={{
-                AlertState,setAlertState,
+                AlertState, setAlertState,
                 user, setUser,
-                group, setGroup,
-                pathValue,setPathValue,
-                Language,setLanguage,
+                pathValue, setPathValue,
+                Language, setLanguage,
                 Admin,
+                selectedCategory, setCategory,
+                Search, setSearch
             }}
         >
             {props.children}
