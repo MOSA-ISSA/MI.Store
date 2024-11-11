@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 import { Cover, Txt } from '../assets/elements/Elements';
 import { searchProducts } from '../api/product.api';
 import TheButton from '../assets/elements/TheButton';
 import { useTheme } from '../hooks/ThemeContext';
+import { useNavigation } from 'expo-router';
 
 const Search = () => {
+    const navigation = useNavigation();
     const { isDarkTheme } = useTheme();
     const [searchText, setSearchText] = useState('');
     const [filteredData, setFilteredData] = useState([]);
@@ -29,7 +31,7 @@ const Search = () => {
                 }
             } catch (error) {
                 console.error("Error during search:", error);
-                Alert.alert("Error", "An error occurred while searching. Please try again.");
+                alert("Error", "An error occurred while searching. Please try again.");
             } finally {
                 setLoading(false);
             }
@@ -54,11 +56,16 @@ const Search = () => {
     }, []);
 
     const renderProducts = () => {
+
+        const handleNavigate = (product) => {
+            navigation.navigate("Product", { product_id: product._id })
+        }
+
         return filteredData.map((product, index) => (
             <TheButton
                 key={index}
                 buttonStyle={{ ...styles.dropdownItem, backgroundColor: isDarkTheme ? '#ffffff25' : '#f0f0f0' }}
-                onPress={() => handleSelect(product)}
+                onPress={() => handleNavigate(product)}
             >
                 <View style={{ flex: 1 }}>
                     <Txt style={styles.itemText}>{product.name}</Txt>
@@ -74,7 +81,7 @@ const Search = () => {
     return (
         <Cover>
             <TextInput
-                style={[styles.searchInput,{color: isDarkTheme ? '#EAE0D5' : '#4A4A4A'}]}
+                style={[styles.searchInput, { color: isDarkTheme ? '#EAE0D5' : '#4A4A4A' }]}
                 placeholder="Search for products..."
                 value={searchText}
                 placeholderTextColor={isDarkTheme ? '#EAE0D5' : '#4A4A4A'}
