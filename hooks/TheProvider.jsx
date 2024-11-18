@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TheContext from "./TheContext";
-import { getLanguages } from "@/constants/local";
+import { getLanguages, getUser } from "@/constants/local";
 
 const TheProvider = (props) => {
     const [AlertState, setAlertState] = useState({
@@ -11,6 +11,7 @@ const TheProvider = (props) => {
         ok: false,
         loading: false,
     });
+    const [LoginState, setLoginState] = useState(false);
     const [user, setUser] = useState();
     const [selectedCategory, setCategory] = useState('');
     const [pathValue, setPathValue] = useState("");
@@ -19,12 +20,14 @@ const TheProvider = (props) => {
     const Admin = user?._isAdmin;
 
     useEffect(() => {
-        getLanguages(setLanguage)
+        getLanguages(setLanguage);
+        getUser(setUser);
     }, []);
 
     return (
         <TheContext.Provider
             value={{
+                LoginState, setLoginState,
                 AlertState, setAlertState,
                 user, setUser,
                 pathValue, setPathValue,

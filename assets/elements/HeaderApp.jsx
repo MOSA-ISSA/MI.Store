@@ -17,7 +17,7 @@ const HeaderStyled = styled(View)`
 
 const HeaderApp = ({ options, navigation, route, ...props }) => {
     const { toggleTheme, isDarkTheme } = useTheme();
-    const { Language, } = useContext(TheContext);
+    const { Language, setLoginState, user } = useContext(TheContext);
     const [modal, setModal] = useState(false);
     const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
 
@@ -89,10 +89,10 @@ const HeaderApp = ({ options, navigation, route, ...props }) => {
     const RightSide = () => {
         return (
             <View style={styles.rightSide}>
-                <Txt style={{ margin: 4 }}>mosa</Txt>
+                <Txt style={{ margin: 4 }}>{user?.name || "log in"}</Txt>
                 <TheButton
                     buttonStyle={styles.user}
-                    onPress={() => navigation.navigate('User')}
+                    onPress={() => user?.name ? navigation.navigate('User') : setLoginState(true)}
                 >
                     <IconFeather name="user" size={20} />
                 </TheButton>

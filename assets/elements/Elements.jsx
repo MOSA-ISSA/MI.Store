@@ -1,5 +1,5 @@
 import { Entypo, Feather } from "@expo/vector-icons";
-import { Image, ImageBackground, Text, View } from "react-native";
+import { Image, ImageBackground, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled from 'styled-components/native';
 
@@ -17,6 +17,10 @@ export const Cover = styled(View)`
   flex: 1;
   background-color: ${({ theme }) => theme.background};
   `;
+
+export const ThemeView = styled(View)`
+  background-color: ${({ theme }) => theme.background};
+  `;
 // padding-top: 10px;
 // padding-horizontal: 10px;
 
@@ -27,6 +31,10 @@ export const Container = styled(SafeAreaView)`
 `;
 
 export const Txt = styled(Text)`
+  color: ${({ theme }) => theme.text};
+`;
+
+export const ThemeTextInput = styled(TextInput)`
   color: ${({ theme }) => theme.text};
 `;
 

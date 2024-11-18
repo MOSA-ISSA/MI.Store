@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { login } from './../api/user.api';
 
 export const getFromStorage = async (key) => {
     try {
@@ -23,7 +24,20 @@ export const saveToStorage = async (key, value) => {
 }
 
 export const getLanguages = async (setLanguage) => {
-    const language = await getFromStorage("language")||"en";
+    const language = await getFromStorage("language") || "en";
     setLanguage(language);
     return;
-} 
+}
+
+export const getUser = async (setUser) => {
+    const StorageUser = await getFromStorage("user") || null;
+    const body ={
+        password: StorageUser?.password,
+        access: StorageUser?.email||StorageUser?.phone
+    }
+    const user = await login(body).then((res) => res?.data).catch((error) => null);
+    console.log(user);
+
+    setUser(user);
+    return;
+}
