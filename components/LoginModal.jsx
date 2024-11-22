@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     },
     containerView: {
         // flex: 1,
+        minWidth:300,
         maxWidth: 600,
         width: '60%',
         justifyContent: 'center',

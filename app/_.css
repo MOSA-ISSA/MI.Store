@@ -36,3 +36,18 @@ h4 {
     font-size: clamp(12.5px, 2vw, 20px);
     font-weight: bold;
 }
+
+.scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    cursor: pointer;
+    flex-wrap: wrap;
+    align-items: 'center';
+    justify-items: 'center';
+    align-self: center;
+    justify-content: center;
+    /* background-color: aqua; */
+    /* height: 100vh; */
+}

@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, Text, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import React, { ReactNode, useState } from 'react';
-import { useTheme } from '../../hooks/ThemeContext';
 import styled from 'styled-components/native';
 import { Txt } from './Elements';
 
@@ -42,8 +41,9 @@ const TheButton: React.FC<TheButtonProps> = React.memo(({
             isPressed={isPressed}
             isCard={isCard}
             bgcColor={bgcColor}
+            // style={buttonStyle || styles.button}
             style={{ ...styles.button, ...buttonStyle }}
-        >
+            >
             {children ?? (
                 <Txt style={{
                     ...styles.text,
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         alignContent: 'center',
-        alignSelf: 'baseline',
         margin: 5,
         padding: 5,
     }
