@@ -12,9 +12,11 @@ const StackRout = () => {
                     header: (props) => <HeaderApp {...props} />
                 }}>
                 <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="Home" options={{ headerShown: 1,title:"MI.store" }} />
+                <Stack.Screen name="Home" options={{ headerShown: 1, title: "MI.store" }} />
                 <Stack.Screen name="Cart" />
                 <Stack.Screen name="User" />
+                <Stack.Screen name="Search" />
+                <Stack.Screen name="Activation" options={{ headerShown: false }} />
                 {/* <Stack.Screen name="code-zone" options={{ headerShown: false }} />
                 <Stack.Screen name="all-students" />
                 <Stack.Screen name="TaskScreen" />

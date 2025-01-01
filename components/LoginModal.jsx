@@ -6,12 +6,12 @@ import {
     Pressable,
     View,
     ActivityIndicator,
+    Linking,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import TheContext from '@/hooks/TheContext';
 import TheButton from '@/assets/elements/TheButton';
-import { IconFeather, ThemeTextInput, ThemeView } from '@/assets/elements/Elements';
-import { createUser, login } from './../api/user.api';
+import { IconFeather, ThemeTextInput, ThemeView, Txt } from '@/assets/elements/Elements';
+import { createUser, login, sendVerification } from './../api/user.api';
 import { saveToStorage } from '@/constants/local';
 
 const LoginModal = () => {
@@ -24,15 +24,9 @@ const LoginModal = () => {
         error: '',
         focus: false,
     });
-    const [access, setAccess] = useState({
+    const [mail, setMail] = useState({
         value: '',
-        state: '',
-        error: '',
-        focus: false,
-    });
-    const [access2, setAccess2] = useState({
-        value: '',
-        state: '',
+        state: 'mail',
         error: '',
         focus: false,
     });
@@ -48,8 +42,7 @@ const LoginModal = () => {
         const body = {
             name: name.value,
             password: password.value,
-            [access.state === 'mail' ? "email" : "phone"]: access.value,
-            [access2.state === 'mail' ? "email" : "phone"]: access2.value
+            email: mail.value,
         };
         console.log(body);
         createUser(body)
@@ -59,45 +52,47 @@ const LoginModal = () => {
                 handelLogInSuccess(res?.data);
             })
             .catch((error) => {
-                console.log("error.message");
+                console.log("error.message".includes);
                 console.log(error.message);
-                setName({ ...name, error: error.message, focus: false });
             })
-            .finally(() => {
-                setLoading(false);
-                // setName({ ...name, value: '' });
-                // setAccess({ ...access, value: '' });
-                // setAccess2({ ...access2, value: '' });
-                // setPassword({ ...password, value: '' });
-                // setForm('Login');
-            })
+        // .finally(() => {
+        //     setLoading(false);
+        //     setName({ ...name, value: '' });
+        //     setMail({ ...mail, value: '' });
+        //     setPassword({ ...password, value: '' });
+        //     setForm('Login');
+        // })
     };
 
     const handelLogInSuccess = (user) => {
         console.log("Success");
-        saveToStorage('user', { ...user, password: password.value });
-        setUser(user);
-        setLoginState(false);
-        setName({ state: '', error: '', focus: false, value: '' });
-        setAccess({ state: '', error: '', focus: false, value: '' });
-        setAccess2({ state: '', error: '', focus: false, value: '' });
-        setPassword({ state: '', error: '', focus: false, value: '' });
-        setForm('Login');
+        if (user?._active) {
+            saveToStorage('user', { ...user, password: password.value });
+            setUser(user);
+            setLoginState(false);
+            setName({ ...name, error: '', focus: false, value: '' });
+            setMail({ ...mail, error: '', focus: false, value: '' });
+            setPassword({ ...password, error: '', focus: false, value: '', lock: true });
+            setForm('Login');
+        }
+        else {
+            setForm('Active');
+        }
     }
 
     const handelLogIn = () => {
         setLoading(true)
-        login({ password: password.value, access: access.value })
+        login({ password: password.value, access: mail.value })
             .then((res) => {
-                // console.log(res);
-                if (!res?.success) throw new Error(res.type);
+                console.log(res);
+                if (!res?.success) throw new Error(res.error);
                 handelLogInSuccess(res?.data);
             })
             .catch((error) => {
                 console.log(error.message);
                 error.message === "password" ?
                     setPassword({ ...password, error: "Invalid Password", focus: false }) :
-                    setAccess({ ...access, error: "Invalid " + access.state, focus: false });
+                    setMail({ ...mail, error: error.message + " " + mail.state, focus: false });
             })
             .finally(() => setLoading(false));
     };
@@ -106,39 +101,33 @@ const LoginModal = () => {
         const { state, value } = type;
         const regex = {
             mail: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            phone: /^\d{10}$/,
             password: /^[A-Za-z\d@$!%*?&]{8,16}$/,
-            name: /^[A-Za-z\s]{2,50}$/
+            name: /^[a-zA-Z]+( [a-zA-Z]+)*$/,
         }
         console.log(state, value, !regex[state]?.test(value));
         const error = !regex[state]?.test(value) && value ? 'Invalid ' + (state) : '';
         return error;
     };
 
-    const mailOrPhone = (text) => {
-        if (text === '') return '';
-        const regex = /[a-zA-Z]/;
-        return regex.test(text.charAt(0)) ? 'mail' : 'phone';
-    };
-
-    const onAccessChange = (text) => {
-        const state = mailOrPhone(text);
-        setAccess({
-            value: text,
-            state,
-            error: ''
-        });
-    };
-
-    const onBlur = (type, setState, setState2) => {
+    const onBlur = (type, setState,) => {
         const error = validateInput(type);
         setState((prev) => {
-            if (setState2) {
-                setState2((prevValue) => { return { ...prevValue, state: access.state === "phone" ? "mail" : "phone" } })
-            }
             return { ...prev, error, focus: false }
         });
     };
+
+    const sendVerificationApi = () => {
+        console.log("sendVerification");
+        setLoading(true);
+        sendVerification({ email: mail.value })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => setLoading(false));
+    }
 
     return (
         <Modal
@@ -151,10 +140,15 @@ const LoginModal = () => {
                 <Pressable style={styles.containerView}>
                     <ThemeView style={styles.modalView}>
                         <Text style={styles.title}>{form}</Text>
+
                         <Text style={styles.errorText}>{name.error || ' '}</Text>
                         {
                             form === 'Sign Up' &&
-                            <View style={{ ...styles.inputContainer, borderColor: name.error ? 'red' : name.focus ? '#4CAF50' : '#ccc' }}>
+                            <View
+                                style={{
+                                    ...styles.inputContainer,
+                                    borderColor: name.error ? 'red' : name.focus ? '#4CAF50' : '#ccc',
+                                }}>
                                 <ThemeTextInput
                                     onFocus={() => setName({ ...name, focus: true })}
                                     onBlur={() => onBlur(name, setName)}
@@ -167,89 +161,90 @@ const LoginModal = () => {
                                 <IconFeather name="user" size={20} color="#888" />
                             </View>
                         }
+                        {
 
-                        <Text style={styles.errorText}>{access.error || " "}</Text>
-                        <View style={{ ...styles.inputContainer, borderColor: access.error ? 'red' : access.focus ? '#4CAF50' : '#ccc' }}>
-                            <ThemeTextInput
-                                onFocus={() => setAccess({ ...access, focus: true })}
-                                onBlur={() => onBlur(access, setAccess, setAccess2)}
-                                style={styles.input}
-                                placeholder="Email or Phone Number"
-                                value={access.value}
-                                onChangeText={onAccessChange}
-                                placeholderTextColor="#888"
-                            />
-                            {access.state === '' ?
-                                <>
-                                    <IconFeather name="mail" size={20} color="#888" />
-                                    <Text style={styles.slash}> / </Text>
-                                    <IconFeather name="phone" size={20} color="#888" />
-                                </> :
-                                <IconFeather name={access.state} size={20} color="#4CAF50" />
-                            }
-                        </View>
-
-                        {form === 'Sign Up' && access.state !== '' &&
+                        }
+                        {
+                            form !== 'Active' &&
                             <>
-                                <Text style={styles.errorText}>{access2.error || "optional"}</Text>
-                                <View
-                                    style={{
-                                        ...styles.inputContainer,
-                                        borderColor: access2.error ? 'red' :
-                                            access2.focus ? '#4CAF50' : '#ccc'
-                                    }}
-                                >
+                                <Text style={styles.errorText}>{mail.error || " "}</Text>
+                                <View style={{ ...styles.inputContainer, borderColor: mail.error ? 'red' : mail.focus ? '#4CAF50' : '#ccc' }}>
                                     <ThemeTextInput
-                                        onFocus={() => setAccess2({ ...access2, focus: true })}
-                                        onBlur={() => onBlur(access2, setAccess2)}
                                         style={styles.input}
-                                        placeholder={access.state === "phone" ? "mail" : "phone"}
-                                        value={access2.value}
-                                        onChangeText={(text) => setAccess2({ ...access2, value: text })}
+                                        onFocus={() => setMail({ ...mail, focus: true })}
+                                        onBlur={() => onBlur(mail, setMail)}
+                                        placeholder="mail"
+                                        value={mail.value}
+                                        onChangeText={(text) => setMail({ ...mail, value: text })}
                                         placeholderTextColor="#888"
                                     />
-                                    <IconFeather name={access.state === "phone" ? "mail" : "phone"} size={20} color="#4CAF50" />
+                                    <IconFeather name="mail" size={20} color="#888" />
+                                </View>
+
+                                <Text style={styles.errorText}>{password.error || " "}</Text>
+                                <View style={{ ...styles.inputContainer, borderColor: password.error ? 'red' : password.focus ? '#4CAF50' : '#ccc' }}>
+                                    <ThemeTextInput
+                                        onFocus={() => setPassword({ ...password, focus: true })}
+                                        onBlur={() => onBlur(password, setPassword)}
+                                        style={styles.input}
+                                        placeholder="Password"
+                                        value={password.value}
+                                        onChangeText={(text) => setPassword({ ...password, value: text })}
+                                        placeholderTextColor="#888"
+                                        secureTextEntry={password.lock}
+                                    />
+                                    <IconFeather onPress={() => setPassword({ ...password, lock: !password.lock })} name={password.lock ? "lock" : "unlock"} size={20} color="#888" />
                                 </View>
                             </>
                         }
-
-                        <Text style={styles.errorText}>{password.error || " "}</Text>
-                        <View style={{ ...styles.inputContainer, borderColor: password.error ? 'red' : password.focus ? '#4CAF50' : '#ccc' }}>
-                            <ThemeTextInput
-                                onFocus={() => setPassword({ ...password, focus: true })}
-                                onBlur={() => onBlur(password, setPassword)}
-                                style={styles.input}
-                                placeholder="Password"
-                                value={password.value}
-                                onChangeText={(text) => setPassword({ ...password, value: text })}
-                                placeholderTextColor="#888"
-                                secureTextEntry={password.lock}
-                            />
-                            <IconFeather onPress={() => setPassword({ ...password, lock: !password.lock })} name={password.lock ? "lock" : "unlock"} size={20} color="#888" />
-                        </View>
+                        {
+                            form === 'Active' &&
+                            <Txt style={styles.verification}>A verification link has been sent to your email address. Please check your inbox (and spam/junk folder, if necessary) and click on the link to verify your account.</Txt>
+                        }
 
                         {Loading ? <ActivityIndicator size={"large"} /> :
                             <TheButton
                                 buttonStyle={styles.button}
-                                onPress={form === 'Login' ? handelLogIn : handleSignUp}
+                                onPress={form === 'Login' ? handelLogIn : form === 'Sign Up' ? handleSignUp : handelLogIn}
                             >
-                                <Text style={styles.buttonText}>{form}</Text>
+                                <Text style={styles.buttonText}>{form === "Active" ? "🔑 Verification Complete? press here" : form}</Text>
                             </TheButton>
+                        }
+                        {
+                            form === 'Active' &&
+                            <>
+                                <TheButton
+                                    buttonStyle={styles.verificationBtn}
+                                    onPress={sendVerificationApi}
+                                >
+                                    <Text style={styles.verificationText}>send verification link again</Text>
+                                </TheButton>
+                                <TheButton
+                                    buttonStyle={{ backgroundColor: '#4545' }}
+                                    title='change mail'
+                                    onPress={() => setForm('Sign Up')}
+                                    >
+                                </TheButton>
+                            </>
                         }
 
                         <Pressable
                             onPress={() => {
-                                form === 'Login' ? setForm('Sign Up') : setForm('Login');
+                                form === 'Login' ? setForm('Sign Up') : form === 'Sign Up' ? setForm('Login') :
+                                    Linking.openURL(`https://mail.google.com/mail/u/0/#inbox`);
                             }}
                             style={styles.switchButton}
                         >
                             <Text style={styles.switchText}>
                                 {form === 'Login' ?
                                     "Don't have an account? Sign Up" :
-                                    "Already have an account? Login"
+                                    form === 'Sign Up' ?
+                                        "Already have an account? Login" :
+                                        mail.value
                                 }
                             </Text>
                         </Pressable>
+
                     </ThemeView>
                 </Pressable>
             </Pressable>
@@ -268,7 +263,7 @@ const styles = StyleSheet.create({
     },
     containerView: {
         // flex: 1,
-        minWidth:300,
+        minWidth: 300,
         maxWidth: 600,
         width: '60%',
         justifyContent: 'center',
@@ -311,7 +306,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     input: {
-        width: '100%',
+        flex: 1,
+        alignSelf: 'stretch',
         fontSize: 16,
         paddingHorizontal: 10,
         height: 45,
@@ -343,4 +339,17 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 5,
     },
+    verification: {
+        marginVertical: 10,
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    verificationBtn: {
+        paddingHorizontal: 10,
+        backgroundColor: '#007BFF',
+    },
+    verificationText: {
+        color: '#fff',
+        fontSize: 14,
+    }
 });

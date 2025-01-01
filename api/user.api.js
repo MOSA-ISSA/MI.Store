@@ -11,3 +11,13 @@ export const createUser = async (body) => {
     const route = `/createuser`;
     return await fetchApi(route, 'POST', stringify(body))
 }
+
+export const activateUser = async (body) => {
+    const route = `/activateUser`;
+    return await fetchApi(route, 'PATCH', stringify(body))
+}
+
+export const sendVerification = async (body) => {
+    const route = `/sendVerification`;
+    return await fetchApi(route, 'POST', stringify(body))
+}

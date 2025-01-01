@@ -14,7 +14,6 @@ export const getFromStorage = async (key) => {
     return null;
 }
 
-
 export const saveToStorage = async (key, value) => {
     try {
         await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -31,13 +30,12 @@ export const getLanguages = async (setLanguage) => {
 
 export const getUser = async (setUser) => {
     const StorageUser = await getFromStorage("user") || null;
-    const body ={
+    const body = {
         password: StorageUser?.password,
-        access: StorageUser?.email||StorageUser?.phone
+        access: StorageUser?.email || StorageUser?.phone
     }
-    const user = await login(body).then((res) => res?.data).catch((error) => null);
+    const user = StorageUser && await login(body).then((res) => res?.data).catch((error) => console.log("error", error, "code:provider"));
     console.log(user);
-
     setUser(user);
     return;
 }
