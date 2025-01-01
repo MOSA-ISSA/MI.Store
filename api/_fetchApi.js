@@ -1,6 +1,6 @@
 // export const baseUrl = "http://localhost:2999" // dev localhost
-export const baseUrl = "http://192.168.1.29:2999" // dev local-port-host
-// export const baseUrl = "https://code-zone-server.onrender.com" // dev
+// export const baseUrl = "http://192.168.1.29:2999" // dev local-port-host
+export const baseUrl = "https://mi-store-server.vercel.app" // dev
 
 export const fetchApi = async (route, method, body) => {
     const url = baseUrl + route;

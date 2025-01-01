@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TheContext from "./TheContext";
 import { getLanguages, getUser } from "@/constants/local";
+import { getAllCategories } from './../api/category.api';
 
 const TheProvider = (props) => {
     const [AlertState, setAlertState] = useState({
@@ -13,15 +14,28 @@ const TheProvider = (props) => {
     });
     const [LoginState, setLoginState] = useState(false);
     const [user, setUser] = useState();
+    const [Categories, setCategories] = useState([{ name: 'Loading...', image: 'https://via.placeholder.com/150' }]);
     const [selectedCategory, setCategory] = useState('');
     const [pathValue, setPathValue] = useState("");
     const [Language, setLanguage] = useState("en");
     const [Search, setSearch] = useState(false);
     const Admin = user?._isAdmin;
 
+    const getAllCategoryApi = async () => {
+        const categories = await getAllCategories()
+            .catch((error) => console.log(error))
+        // .finally(() => setLoading(false));
+        setCategories(categories?.data || []);
+        console.log("categories", categories?.data?.length);
+    }
+
     useEffect(() => {
         getLanguages(setLanguage);
         getUser(setUser);
+    }, []);
+
+    useEffect(() => {
+        getAllCategoryApi();
     }, []);
 
     return (
@@ -34,7 +48,8 @@ const TheProvider = (props) => {
                 Language, setLanguage,
                 Admin,
                 selectedCategory, setCategory,
-                Search, setSearch
+                Search, setSearch,
+                Categories, setCategories
             }}
         >
             {props.children}

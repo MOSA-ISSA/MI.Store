@@ -1,11 +1,20 @@
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import CategoryCard from './CategoryCard';
 import CategoryCarouselWeb from './CategoryCarouselWeb';
 import { getAllCategories } from '../api/category.api';
+import TheContext from '../hooks/TheContext';
+import { use } from 'react';
 
 const CategoryCarousel = () => {
-    const [Categories, setCategories] = useState([{ name: 'Loading...', image: 'https://via.placeholder.com/150' }]);
+    const { Categories, setCategories } = useContext(TheContext);
+
+    const renderCategories = () => {
+        const categories = Categories || []
+        return categories.map((category, index) => (
+            <CategoryCard key={index} {...category} />
+        ));
+    }
 
     const getAllCategoryApi = async () => {
         const categories = await getAllCategories()
@@ -14,16 +23,12 @@ const CategoryCarousel = () => {
         setCategories(categories?.data || []);
         console.log("categories", categories?.data?.length);
     }
-    useEffect(() => {
-        getAllCategoryApi();
-    }, []);
 
-    const renderCategories = () => {
-        const categories = Categories || []
-        return categories.map((category, index) => (
-            <CategoryCard key={index} {...category} />
-        ));
-    }
+    useEffect(() => {
+        if (Categories.length === 0) {
+            getAllCategoryApi();
+        }
+    }, []);
 
 
     return (
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 2,
-        zIndex:-100,
+        zIndex: -100,
         // backgroundColor: '#45454520',
     },
     rowScroll: {

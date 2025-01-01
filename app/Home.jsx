@@ -19,7 +19,10 @@ const Home = () => {
             body.category = selectedCategory;
         }
         const products = await getAllProducts(body)
-            .catch((error) => console.log(error))
+            .catch((error) => {
+                // getAllProductsApi();
+                console.log(error)
+            })
             .finally(() => setLoading(false));
         setProduct(products?.data || []);
         console.log("products", products?.data?.length);
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 150,
         zIndex: 1,
-        right:"50%",
-        left:'50%',
+        right: "50%",
+        left: '50%',
     }
 });
