@@ -43,8 +43,8 @@ export default function SearchBar() {
                     <Text style={styles.itemText}>{item.name}</Text>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={styles.txt}>{item.description}</Text>
                 </View>
-                <Image source={{ uri: item.image || "https://via.placeholder.com/150" }} style={styles.image} />
-                <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.image} />
+                <Image source={{ uri: item.image || "https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg" }} style={styles.image} />
+                <Image source={{ uri: "https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg" }} style={styles.image} />
             </TouchableOpacity>
         ));
     };

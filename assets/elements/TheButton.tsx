@@ -16,6 +16,7 @@ interface TheButtonProps {
     children?: ReactNode;
     isCard?: boolean;
     bgcColor?: string;
+    id?: string;
 }
 
 const TheButton: React.FC<TheButtonProps> = React.memo(({
@@ -25,7 +26,8 @@ const TheButton: React.FC<TheButtonProps> = React.memo(({
     title,
     textStyle,
     isCard,
-    children
+    children,
+    id
 }) => {
     const [isHovered, setHovered] = useState(false);
     const [isPressed, setPressed] = useState(false);
@@ -43,7 +45,8 @@ const TheButton: React.FC<TheButtonProps> = React.memo(({
             bgcColor={bgcColor}
             // style={buttonStyle || styles.button}
             style={{ ...styles.button, ...buttonStyle }}
-            >
+            id={id}
+        >
             {children ?? (
                 <Txt style={{
                     ...styles.text,

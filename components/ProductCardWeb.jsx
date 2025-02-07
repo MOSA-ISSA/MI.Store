@@ -1,27 +1,29 @@
-import './ProductCard.css';
+import "./ProductCard.css";
 import React, { useCallback, useEffect, useState } from 'react';
 import { Dimensions, Image, Platform, StyleSheet, Text, View } from 'react-native';
-import TheButton from './../assets/elements/TheButton';
+import TheButton from '../assets/elements/TheButton';
 import { Txt } from '../assets/elements/Elements';
 import { useNavigation } from 'expo-router';
 
 const size = Dimensions.get('window');
-const getWidth = () => Dimensions.get('window').width * 0.3
+const cardWidth = size.width * 0.2;
 
 const ProductCard = (props) => {
     const navigation = useNavigation();
-    const { name, price, image, _id } = props
+    const { name, price, image, } = props
     const [ImageUrl, setImageUrl] = useState(image)
-    const [container_width, set_container_width] = useState(getWidth());
+    // const globalWidth = window.innerWidth
+    const [container_width, set_container_width] = useState(cardWidth);
 
     const handleNavigate = useCallback(() => {
-        console.log("\n _id", _id, "\n name", name);
-        navigation.navigate("Product", { product_id: _id })
+        navigation.navigate("Product", { product_id: props._id })
     }, [])
 
     useEffect(() => {
         const handleResize = () => {
-            set_container_width(getWidth());
+            console.log(window.innerWidth);
+
+            set_container_width(cardWidth);
         };
 
         const subscription = Dimensions.addEventListener('change', handleResize);
@@ -29,26 +31,21 @@ const ProductCard = (props) => {
         return () => subscription?.remove();
     }, []);
 
-    const webSize = Platform.OS === 'web' ? { height: container_width, width: container_width } : {}
-
     return (
         <TheButton
-            id='card'
+            // id={'card'}
             isCard={true}
             onPress={handleNavigate}
-            buttonStyle={{
-                ...styles.card,
-                ...webSize
-            }}
+            buttonStyle={{ ...styles.card, width: container_width }}
         >
-            <Image
+            {/* <Image
                 source={{ uri: ImageUrl || "https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg" }}
                 onError={() => setImageUrl("https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg")}
                 resizeMode='cover'
                 style={styles.image}
             />
             <Txt numberOfLines={1} ellipsizeMode="tail" style={styles.txt}>{name || "name"}</Txt>
-            <Txt style={styles.txt}>₪{price || "price"}</Txt>
+            <Txt style={styles.txt}>₪{price || "price"}</Txt> */}
         </TheButton>
     );
 };
@@ -61,8 +58,9 @@ const styles = StyleSheet.create({
         margin: 4,
         maxWidth: 300,
         maxHeight: 300,
-        width: getWidth(),
-        height: Platform.OS === 'web' ? getWidth() : 180,
+        // width: '100',
+        // width: size.width * 0.3,
+        // height: Platform.OS === 'web' ? size.width * 0.3 : 180,
         borderRadius: 8,
         justifyContent: 'flex-start',
         alignItems: 'center',

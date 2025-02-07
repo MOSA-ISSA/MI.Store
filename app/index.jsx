@@ -1,27 +1,27 @@
 import { ActivityIndicator, StyleSheet, } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useNavigation } from 'expo-router';
 import { Screen, Txt } from '@elements/Elements';
 import { getFromStorage } from '../constants/local';
+import { getHomeData } from '@/api/_fetchApi';
+import TheContext from '@/hooks/TheContext';
 
 const index = () => {
+  const { setProducts, setCategories } = useContext(TheContext)
   const navigation = useNavigation();
-
-  async function prepare() {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    } catch (e) {
-      console.warn(e);
-    } finally {
-      navigation.replace('Home');
-    }
-  }
 
   useEffect(() => {
     const restoreData = async () => {
       try {
-        await prepare()
         const user = await getFromStorage('user');
+        const data = await getHomeData(user?.email, user?.password);
+        console.log('products', data.products.length);
+        console.log('categories', data.categories.length);
+        if (data?.success) {
+          setProducts(data?.products || []);
+          setCategories(data?.categories || []);
+          navigation.replace('Home');
+        }
       } catch (e) {
         console.log("error", e);
       }

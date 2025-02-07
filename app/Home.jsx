@@ -9,9 +9,9 @@ import SearchBar from '../components/SearchBar';
 import { ScrollView } from 'react-native-web';
 
 const Home = () => {
-    const { selectedCategory, Search, } = useContext(TheContext);
-    const [Loading, setLoading] = useState(true);
-    const [Products, setProduct] = useState([]);
+    const { selectedCategory, Search, Products: providerProducts, } = useContext(TheContext);
+    const [Loading, setLoading] = useState(providerProducts ? false : true);
+    const [Products, setProduct] = useState(providerProducts || []);
 
     const getAllProductsApi = async () => {
         let body = {};
@@ -50,7 +50,13 @@ const Home = () => {
     }
 
     useEffect(() => {
-        getAllProductsApi();
+        console.log("selectedCategory", !!selectedCategory);
+
+        if (selectedCategory) {
+            getAllProductsApi();
+        } else {
+            (providerProducts) ? setProduct(providerProducts) : getAllProductsApi();
+        }
     }, [selectedCategory]);
 
     return (

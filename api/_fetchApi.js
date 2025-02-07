@@ -18,3 +18,9 @@ export const fetchApi = async (route, method, body) => {
 }
 
 export const stringify = (body) => (JSON.stringify(body))
+
+
+export const getHomeData = async (email, password) => {
+    const route = `/getHomeData?password=${password}&email=${email}`;
+    return await fetchApi(route, 'GET', null)
+}

@@ -1,0 +1,19 @@
+#card {
+    z-index: 1;
+}
+
+@media screen and (max-width: 450px) {
+    #card {
+        /* display: null; */
+        height: 45dvw !important;
+        width: 45dvw !important;
+    }
+}
+
+@media screen and (max-width: 300px) {
+    #card {
+        /* display: null; */
+        height: 90dvw !important;
+        width: 90dvw !important;
+    }
+}

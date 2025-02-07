@@ -4,10 +4,11 @@ import CategoryCard from './CategoryCard';
 import CategoryCarouselWeb from './CategoryCarouselWeb';
 import { getAllCategories } from '../api/category.api';
 import TheContext from '../hooks/TheContext';
-import { use } from 'react';
 
 const CategoryCarousel = () => {
     const { Categories, setCategories } = useContext(TheContext);
+    // console.log("Categories", Categories);
+
 
     const renderCategories = () => {
         const categories = Categories || []
@@ -25,7 +26,7 @@ const CategoryCarousel = () => {
     }
 
     useEffect(() => {
-        if (Categories.length === 0) {
+        if (Categories.length === 1) {
             getAllCategoryApi();
         }
     }, []);

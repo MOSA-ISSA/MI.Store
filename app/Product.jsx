@@ -12,6 +12,7 @@ const Product = () => {
     const [Product, setProduct] = useState({});
 
     const getProductApi = async () => {
+        // console.log("id", params.product_id);
         const product = await getOneProduct(params.product_id)
             .catch((error) => console.log(error))
             .finally(() => setLoading(false));
@@ -47,7 +48,7 @@ const Product = () => {
                 <Txt style={styles.txt}>{Product?.description}</Txt>
                 <Image
                     source={{ uri: Product?.image }}
-                    onError={() => setProduct({ ...Product, image: "https://via.placeholder.com/150" })}
+                    onError={() => setProduct({ ...Product, image: "https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg" })}
                     style={styles.image}
                     resizeMode='cover'
                 />

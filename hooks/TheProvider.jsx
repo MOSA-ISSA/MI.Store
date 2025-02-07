@@ -14,28 +14,17 @@ const TheProvider = (props) => {
     });
     const [LoginState, setLoginState] = useState(false);
     const [user, setUser] = useState();
-    const [Categories, setCategories] = useState([{ name: 'Loading...', image: 'https://via.placeholder.com/150' }]);
+    const [Categories, setCategories] = useState([{ name: 'Loading...', image: 'https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg' }]);
+    const [Products, setProducts] = useState(null);
     const [selectedCategory, setCategory] = useState('');
     const [pathValue, setPathValue] = useState("");
     const [Language, setLanguage] = useState("en");
     const [Search, setSearch] = useState(false);
     const Admin = user?._isAdmin;
 
-    const getAllCategoryApi = async () => {
-        const categories = await getAllCategories()
-            .catch((error) => console.log(error))
-        // .finally(() => setLoading(false));
-        setCategories(categories?.data || []);
-        console.log("categories", categories?.data?.length);
-    }
-
     useEffect(() => {
         getLanguages(setLanguage);
         getUser(setUser);
-    }, []);
-
-    useEffect(() => {
-        getAllCategoryApi();
     }, []);
 
     return (
@@ -49,7 +38,8 @@ const TheProvider = (props) => {
                 Admin,
                 selectedCategory, setCategory,
                 Search, setSearch,
-                Categories, setCategories
+                Categories, setCategories,
+                Products, setProducts
             }}
         >
             {props.children}

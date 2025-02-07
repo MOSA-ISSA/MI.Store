@@ -21,7 +21,7 @@ const CategoryCard = (props) => {
             // isCard={true}
         >
             <ImageBorder
-                source={{ uri: props?.image || "https://via.placeholder.com/150" }}
+                source={{ uri: props?.image || "https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg" }}
                 style={{
                     ...styles.image,
                     ...{ ...handleCategory() },

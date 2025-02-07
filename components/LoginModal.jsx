@@ -38,6 +38,7 @@ const LoginModal = () => {
         lock: true
     });
 
+
     const handleSignUp = () => {
         const body = {
             name: name.value,
@@ -162,11 +163,8 @@ const LoginModal = () => {
                             </View>
                         }
                         {
-
-                        }
-                        {
                             form !== 'Active' &&
-                            <>
+                            <View style={{ flexGrow: 1, width: '100%' }}>
                                 <Text style={styles.errorText}>{mail.error || " "}</Text>
                                 <View style={{ ...styles.inputContainer, borderColor: mail.error ? 'red' : mail.focus ? '#4CAF50' : '#ccc' }}>
                                     <ThemeTextInput
@@ -180,7 +178,6 @@ const LoginModal = () => {
                                     />
                                     <IconFeather name="mail" size={20} color="#888" />
                                 </View>
-
                                 <Text style={styles.errorText}>{password.error || " "}</Text>
                                 <View style={{ ...styles.inputContainer, borderColor: password.error ? 'red' : password.focus ? '#4CAF50' : '#ccc' }}>
                                     <ThemeTextInput
@@ -195,7 +192,7 @@ const LoginModal = () => {
                                     />
                                     <IconFeather onPress={() => setPassword({ ...password, lock: !password.lock })} name={password.lock ? "lock" : "unlock"} size={20} color="#888" />
                                 </View>
-                            </>
+                            </View>
                         }
                         {
                             form === 'Active' &&
@@ -223,7 +220,7 @@ const LoginModal = () => {
                                     buttonStyle={{ backgroundColor: '#4545' }}
                                     title='change mail'
                                     onPress={() => setForm('Sign Up')}
-                                    >
+                                >
                                 </TheButton>
                             </>
                         }
@@ -263,15 +260,15 @@ const styles = StyleSheet.create({
     },
     containerView: {
         // flex: 1,
-        minWidth: 300,
+        minWidth: 150,
         maxWidth: 600,
-        width: '60%',
+        width: '90%',
         justifyContent: 'center',
         alignItems: 'center',
         // backgroundColor:'#ffffff50'
     },
     modalView: {
-        maxWidth: 600,
+        maxWidth: 500,
         width: '100%',
         padding: 30,
         borderRadius: 20,
@@ -306,11 +303,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     input: {
-        flex: 1,
+        flexGrow: 1,
         alignSelf: 'stretch',
         fontSize: 16,
-        paddingHorizontal: 10,
-        height: 45,
+        // paddingHorizontal: 10,
+        // height: 45,
     },
     button: {
         alignSelf: 'center',

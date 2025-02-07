@@ -15,17 +15,22 @@ export const ThemeProviderWrapper = ({ children }) => {
         const value = await AsyncStorage.getItem('isDarkTheme');
         if (value !== null) {
             setIsDarkTheme(JSON.parse(value));
+            document.body.style.backgroundColor = JSON.parse(value) ? 'black' : '#D28C6890';
         }
     }
     const toggleTheme = () => {
-        setIsDarkTheme((prevTheme) => !prevTheme);
+        setIsDarkTheme((prevTheme) => {
+            document.body.style.backgroundColor = !prevTheme ? 'black' : '#D28C6890';
+            return !prevTheme
+        });
         AsyncStorage.setItem('isDarkTheme', JSON.stringify(!isDarkTheme));
+        // isDarkTheme ? 'sun' : 'moon'
     };
 
     const theme = isDarkTheme ? darkThemeStyled : lightThemeStyled;
     const colorText = isDarkTheme ? "#1E1F36" : "#1F92C0";
     const colorTextElement = isDarkTheme ? "#1E1F36" : "#1F92C0";
-    const bgcColor = isDarkTheme ? "#1F92C0": '#1E1F36' ;
+    const bgcColor = isDarkTheme ? "#1F92C0" : '#1E1F36';
 
     useEffect(() => {
         storageDarkTheme();

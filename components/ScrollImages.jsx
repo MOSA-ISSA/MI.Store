@@ -112,7 +112,7 @@ const ScrollImages = ({
                                 <Image
                                     resizeMode={'contain' || resizeMode} style={{ ...styles.style_Image, ...styleImages }}
                                     source={{ uri: item }}
-                                    defaultSource={{ uri: 'https://via.placeholder.com/150' }}
+                                    defaultSource={{ uri: 'https://raw.githubusercontent.com/MOSA-ISSA/images/refs/heads/master/canvas-48.jpg' }}
                                 />
                             </View>
                         ))
