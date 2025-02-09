@@ -68,7 +68,7 @@ const LoginModal = () => {
     const handelLogInSuccess = (user) => {
         console.log("Success");
         if (user?._active) {
-            saveToStorage('user', { ...user, password: password.value });
+            saveToStorage('user', { ...user });
             setUser(user);
             setLoginState(false);
             setName({ ...name, error: '', focus: false, value: '' });
@@ -127,7 +127,9 @@ const LoginModal = () => {
             .catch((error) => {
                 console.log(error);
             })
-            .finally(() => setLoading(false));
+            .finally(() =>
+                setLoading(false)
+            );
     }
 
     return (
@@ -225,6 +227,19 @@ const LoginModal = () => {
                             </>
                         }
 
+                        {
+                            form === 'Login' && mail.error == 'user not active mail' &&
+                            <TheButton
+                                buttonStyle={{ backgroundColor: '#4545' }}
+                                title='send verification link'
+                                onPress={() => {
+                                    console.log("sendVerification")
+                                    setForm('Active')
+                                }}
+                            >
+                            </TheButton>
+                        }
+
                         <Pressable
                             onPress={() => {
                                 form === 'Login' ? setForm('Sign Up') : form === 'Sign Up' ? setForm('Login') :
@@ -233,14 +248,27 @@ const LoginModal = () => {
                             style={styles.switchButton}
                         >
                             <Text style={styles.switchText}>
-                                {form === 'Login' ?
-                                    "Don't have an account? Sign Up" :
-                                    form === 'Sign Up' ?
-                                        "Already have an account? Login" :
-                                        mail.value
+                                {
+                                    form === 'Login' ?
+                                        "Don't have an account? Sign Up" :
+                                        form === 'Sign Up' ?
+                                            "Already have an account? Login" :
+                                            mail.value
                                 }
                             </Text>
                         </Pressable>
+
+                        {
+                            form === 'Active' &&
+                            <TheButton
+                                buttonStyle={{ backgroundColor: 'transparent' }}
+                                textStyle={{ color: '#888' }}
+                                title='back to login'
+                                onPress={() => setForm('Login')}
+                            >
+                            </TheButton>
+                        }
+
 
                     </ThemeView>
                 </Pressable>

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { login } from './../api/user.api';
+import { apiGetUser, login } from './../api/user.api';
 
 export const getFromStorage = async (key) => {
     try {
@@ -32,9 +32,9 @@ export const getUser = async (setUser) => {
     const StorageUser = await getFromStorage("user") || null;
     const body = {
         password: StorageUser?.password,
-        access: StorageUser?.email || StorageUser?.phone
+        email: StorageUser?.email
     }
-    const user = StorageUser && await login(body).then((res) => res?.data).catch((error) => console.log("error", error, "code:provider"));
+    const user = StorageUser && await apiGetUser(body).then((res) => res?.data).catch((error) => console.log("error", error, "code:provider"));
     console.log(user);
     setUser(user);
     return;
